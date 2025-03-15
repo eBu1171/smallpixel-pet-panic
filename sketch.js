@@ -1,3 +1,11 @@
+// Use direct variables instead (replace with your actual values)
+// const SUPABASE_URL = 'https://your-project-id.supabase.co';
+// const SUPABASE_KEY = 'your-anon-key';
+
+// These variables will be populated from config.js
+let SUPABASE_URL;
+let SUPABASE_KEY;
+
 let pet, petSprite, burgerSprite, pizzaSprite, bookSprite, clockSprite;
 let foods = [];
 let stressors = [];
@@ -33,9 +41,6 @@ let nextDifficultyIncrease = 0;
 let foodValue = 15; // Increased base energy value from food
 let stressorDamage = 8; // Reduced initial stressor damage
 
-// Supabase configuration
-const SUPABASE_URL = 'https://ckwvzlreewnairudjnrv.supabase.co'; // Replace with your Supabase URL
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrd3Z6bHJlZXduYWlydWRqbnJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMTg0MjAsImV4cCI6MjA1NzU5NDQyMH0.t78lcbBeeWE14kIn6DoAoBTSMLt5QsIwNKocrZTyOkw'; // Replace with your Supabase anon key
 let supabaseClient;
 
 // Leaderboard variables
@@ -82,8 +87,27 @@ function setup() {
         redraw();
     });
 
-    // Initialize Supabase client
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Initialize Supabase client with error handling
+    try {
+        // Get credentials from config.js if available
+        if (typeof SUPABASE_CONFIG !== 'undefined') {
+            SUPABASE_URL = SUPABASE_CONFIG.url;
+            SUPABASE_KEY = SUPABASE_CONFIG.key;
+            console.log("Supabase credentials loaded from config");
+        } else {
+            // Fallback for development or if config is missing
+            console.warn("SUPABASE_CONFIG not found, using default/demo mode");
+            SUPABASE_URL = 'https://demo.supabase.co';
+            SUPABASE_KEY = 'demo';
+        }
+
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log("Supabase client initialized");
+    } catch (error) {
+        console.error("Error initializing Supabase client:", error);
+        // Continue with the game even if Supabase fails
+        supabaseClient = null;
+    }
 
     // Create title graphic
     gameTitle = createGraphics(600, 100);
@@ -1594,6 +1618,11 @@ function showNameInput() {
         submitBtn.style.cursor = 'wait';
 
         try {
+            // Check if Supabase client is available
+            if (!supabaseClient) {
+                throw new Error("Leaderboard service unavailable");
+            }
+
             // Insert score into Supabase
             const { data, error } = await supabaseClient
                 .from('leaderboard')
@@ -1619,13 +1648,33 @@ function showNameInput() {
 
         } catch (error) {
             console.error('Error submitting score:', error);
-            errorMsg.textContent = 'Error submitting score. Please try again.';
+            errorMsg.textContent = 'Error submitting score. Your score has been saved locally.';
             errorMsg.style.animation = 'pulse 0.5s';
             setTimeout(() => { errorMsg.style.animation = ''; }, 500);
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit Score';
-            submitBtn.style.backgroundColor = '#4080ff';
-            submitBtn.style.cursor = 'pointer';
+
+            // Save to local storage instead
+            let localScores = JSON.parse(localStorage.getItem('pixelPetPanicScores') || '[]');
+            localScores.push({
+                player_name: name,
+                score: score,
+                difficulty_reached: Math.floor(difficulty),
+                created_at: new Date().toISOString()
+            });
+            localStorage.setItem('pixelPetPanicScores', JSON.stringify(localScores));
+
+            // Enable the button again after a delay
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Continue';
+                submitBtn.style.backgroundColor = '#4080ff';
+                submitBtn.style.cursor = 'pointer';
+
+                // Change the button to just close the form
+                submitBtn.onclick = () => {
+                    document.body.removeChild(form);
+                    loop(); // Resume the game
+                };
+            }, 2000);
         }
     };
 
@@ -1717,7 +1766,7 @@ function fetchLeaderboardData(tbody) {
             const errorRow = document.createElement('tr');
             const errorCell = document.createElement('td');
             errorCell.colSpan = 5;
-            errorCell.textContent = 'Error: Could not connect to the leaderboard';
+            errorCell.textContent = 'Leaderboard temporarily unavailable';
             errorCell.style.textAlign = 'center';
             errorCell.style.padding = '30px';
             errorCell.style.color = '#ff5555';

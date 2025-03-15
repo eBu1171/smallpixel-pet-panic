@@ -51,16 +51,20 @@ CREATE POLICY "Anyone can insert scores"
 
    - Click "Run" to execute the SQL commands
 
-3. **Get Your API Keys**
+3. **Set Up Your API Keys**
    - Go to the "Settings" section, then "API"
    - Copy your "Project URL" and "anon" key
-   - Open `sketch.js` in your project
-   - Replace the placeholder values for `SUPABASE_URL` and `SUPABASE_KEY` with your actual values:
+   - Create a `config.js` file by copying `config.example.js` and replace the placeholder values:
 
 ```javascript
-const SUPABASE_URL = 'https://your-project-id.supabase.co';
-const SUPABASE_KEY = 'your-anon-key';
+// Supabase configuration
+const SUPABASE_CONFIG = {
+    url: 'https://your-project-id.supabase.co',
+    key: 'your-anon-key'
+};
 ```
+
+   - This file is excluded from Git to keep your credentials secure
 
 ## Running the Game with a Local Server
 
