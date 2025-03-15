@@ -8,8 +8,31 @@
     <!-- Add Supabase JS client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Load configuration (this file is not tracked by Git) -->
-    <script src="config.js"></script>
+    <!-- Inline fallback configuration for GitHub Pages deployment -->
+    <script>
+        // This fallback configuration will be used if config.js is not available (e.g., on GitHub Pages)
+        const SUPABASE_CONFIG = {
+            url: 'https://ckwvzlreewnairudjnrv.supabase.co',
+            key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrd3Z6bHJlZXduYWlydWRqbnJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMTg0MjAsImV4cCI6MjA1NzU5NDQyMH0.t78lcbBeeWE14kIn6DoAoBTSMLt5QsIwNKocrZTyOkw'
+        };
+    </script>
+    
+    <!-- Try to load external config (will override inline config if available) -->
+    <script>
+        // This will attempt to load the config.js file
+        // If it fails (e.g., on GitHub Pages), the inline config above will be used
+        (function() {
+            const script = document.createElement('script');
+            script.src = 'config.js';
+            script.onerror = function() {
+                console.log('Using inline Supabase configuration (config.js not found)');
+            };
+            script.onload = function() {
+                console.log('External config.js loaded successfully');
+            };
+            document.head.appendChild(script);
+        })();
+    </script>
     
     <style>
         body {
