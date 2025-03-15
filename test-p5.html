@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>P5.js Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script>
+        function setup() {
+            createCanvas(400, 400);
+            background(220);
+            console.log("P5.js is working!");
+        }
+
+        function draw() {
+            fill(255, 0, 0);
+            ellipse(200, 200, 100, 100);
+            
+            // Test time functions
+            fill(0);
+            textSize(20);
+            text("Hour: " + hour(), 50, 50);
+            text("Minute: " + minute(), 50, 80);
+            text("Second: " + second(), 50, 110);
+        }
+
+        // Fallback time functions
+        function hour() {
+            return new Date().getHours();
+        }
+
+        function minute() {
+            return new Date().getMinutes();
+        }
+
+        function second() {
+            return new Date().getSeconds();
+        }
+    </script>
+</head>
+<body>
+    <h1>P5.js Test</h1>
+    <p>If you see a red circle and time information below, p5.js is working correctly.</p>
+</body>
+</html> 

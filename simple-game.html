@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Pixel Pet Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script>
+        let petSprite;
+        let pet = { x: 100, y: 250, width: 160, height: 160 };
+
+        function setup() {
+            createCanvas(800, 600);
+            petSprite = createGraphics(160, 160);
+            drawPetSprite(petSprite);
+            console.log("Setup complete");
+        }
+
+        function draw() {
+            background(135, 206, 235);
+            image(petSprite, pet.x, pet.y);
+            
+            fill(0);
+            textSize(24);
+            text("Simple Pixel Pet Game", 50, 50);
+            text("If you can see this, the game is working!", 50, 100);
+            
+            console.log("Frame drawn");
+        }
+
+        function drawPetSprite(g) {
+            g.clear();
+            g.noStroke();
+            
+            // Draw body (circular)
+            g.fill(255, 100, 100);
+            g.ellipse(80, 80, 120, 120);
+            
+            // Eyes
+            g.fill(255);
+            g.ellipse(60, 70, 25, 30);
+            g.ellipse(100, 70, 25, 30);
+            
+            // Pupils
+            g.fill(0);
+            g.ellipse(60, 70, 12, 15);
+            g.ellipse(100, 70, 12, 15);
+            
+            // Mouth
+            g.noFill();
+            g.stroke(0);
+            g.strokeWeight(3);
+            g.arc(80, 95, 50, 30, 0, PI);
+        }
+    </script>
+</head>
+<body>
+    <h1>Simple Pixel Pet Game</h1>
+    <p>This is a simplified version of the game to identify any issues.</p>
+</body>
+</html> 
