@@ -173,7 +173,7 @@ function drawGameTitle(g) {
     // AI tag
     g.textSize(20);
     g.fill(50, 205, 50);
-    g.text("AI EDITION", 300, 85);
+    g.text("1st EDITION", 300, 85);
 }
 
 function drawPetSprite(g) {
@@ -1279,7 +1279,7 @@ function resetGame() {
 }
 
 function shareScore() {
-    let tweetText = `I scored ${score} points in Pixel Pet Panic: AI Edition! Can you beat my score? #PixelPetPanic #AIGames`;
+    let tweetText = `I scored ${score} points in Pixel Pet Panic: 1st Edition! Can you beat my score? #PixelPetPanic #AIGames`;
     let tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
     window.open(tweetUrl, '_blank');
 }
